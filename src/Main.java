@@ -143,7 +143,7 @@ public class Main {
         for (int i = 0; i < board.length; i++) {
             if (board[i] == ' ') {
                 board[i] = computer;
-                int score = minMax(board, computer, human, board.length,
+                int score = minMax(board, computer, human, 0,board.length,
                         false, Integer.MIN_VALUE, Integer.MAX_VALUE);
                 board[i] = ' '; //resetting the actual value to not override our board
                 if (score > bestScore) {
@@ -158,18 +158,24 @@ public class Main {
         return move+1;
     }
 
-    static int minMax(char[] board, char computer, char human, int depth,
-                      boolean isMaximising, int alpha, int beta) {
-        counter++;
-        char result = winCondition(board);
-        if(result != 'a'){
+    static int scoreEvaluation(int depth, char result, char computer, char human){
+
             if(result == computer){
-                return 1;
+                return 10 - depth;
             }else if(result == human){
-                return -1;
-            }else if(result == 't'){
-                return 0;
+                return -10 + depth;
             }
+            return 0;
+
+    }
+
+    static int minMax(char[] board, char computer, char human, int depth, int depthGoal,
+                      boolean isMaximising, int alpha, int beta) {
+
+        counter++;
+
+        if(depth == depthGoal || winCondition(board) != 'a'){
+            return scoreEvaluation(depth,winCondition(board), computer, human);
         }
 
         if(isMaximising){ //maximiser (i.e. Computer)
@@ -177,7 +183,8 @@ public class Main {
             for (int i = 0; i < board.length; i++) {
                 if(board[i] == ' ') {
                     board[i] = computer;
-                    int score = minMax(board,computer,human,depth-1,false,alpha,beta);
+                    int score = minMax(board,computer,human,depth+1,depthGoal,
+                            false,alpha,beta);
                     board[i] = ' ';
 
                     bestScore = Math.max(score, bestScore);
@@ -194,7 +201,8 @@ public class Main {
             for (int i = 0; i < board.length; i++) {
                 if(board[i] == ' ') {
                     board[i] = human;
-                    int score = minMax(board,computer,human,depth-1,true,alpha,beta);
+                    int score = minMax(board,computer,human,depth+1,depthGoal,
+                            true,alpha,beta);
                     board[i] = ' ';
 
                     bestScore = Math.min(score, bestScore);
