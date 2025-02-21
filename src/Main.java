@@ -158,15 +158,30 @@ public class Main {
         return move+1;
     }
 
-    static int scoreEvaluation(int depth, char result, char computer, char human){
+    static int[] points = {3,2,3,
+                           2,4,2,
+                           3,2,3};
 
-            if(result == computer){
+    static int scoreEvaluation(char[] board, int depth, char result, char computer, char human){
+        if(result != 'a') {
+            if (result == computer) {
                 return 10 - depth;
-            }else if(result == human){
-                return -10 + depth;
+            } else if (result == human) {
+                return -10 - depth;
             }
-            return 0;
-
+        }
+        int computerPoints = 0;
+        int humanPoints = 0;
+        for (int i = 0; i < board.length; i++) {
+            char current = board[i];
+            if(current == computer){
+                computerPoints += points[i];
+            }
+            if(current == human){
+                humanPoints += points[i];
+            }
+        }
+        return computerPoints - humanPoints;
     }
 
     static int minMax(char[] board, char computer, char human, int depth, int depthGoal,
@@ -175,7 +190,7 @@ public class Main {
         counter++;
 
         if(depth == depthGoal || winCondition(board) != 'a'){
-            return scoreEvaluation(depth,winCondition(board), computer, human);
+            return scoreEvaluation(board,depth,winCondition(board), computer, human);
         }
 
         if(isMaximising){ //maximiser (i.e. Computer)
