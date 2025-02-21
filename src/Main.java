@@ -143,7 +143,8 @@ public class Main {
         for (int i = 0; i < board.length; i++) {
             if (board[i] == ' ') {
                 board[i] = computer;
-                int score = minMax(board, computer, human, 0, false);
+                int score = minMax(board, computer, human, board.length,
+                        false, Integer.MIN_VALUE, Integer.MAX_VALUE);
                 board[i] = ' '; //resetting the actual value to not override our board
                 if (score > bestScore) {
                     bestScore = score;
@@ -157,7 +158,8 @@ public class Main {
         return move+1;
     }
 
-    static int minMax(char[] board, char computer, char human, int depth, boolean isMaximising) {
+    static int minMax(char[] board, char computer, char human, int depth,
+                      boolean isMaximising, int alpha, int beta) {
         counter++;
         char result = winCondition(board);
         if(result != 'a'){
@@ -175,9 +177,14 @@ public class Main {
             for (int i = 0; i < board.length; i++) {
                 if(board[i] == ' ') {
                     board[i] = computer;
-                    int score = minMax(board,computer,human,depth+1,false);
+                    int score = minMax(board,computer,human,depth-1,false,alpha,beta);
                     board[i] = ' ';
+
                     bestScore = Math.max(score, bestScore);
+                    alpha = Math.max(alpha, score);
+                    if(beta <= alpha){
+                        break; //prune
+                    }
                 }
             }
             return bestScore;
@@ -187,9 +194,14 @@ public class Main {
             for (int i = 0; i < board.length; i++) {
                 if(board[i] == ' ') {
                     board[i] = human;
-                    int score = minMax(board,computer,human,depth+1,true);
+                    int score = minMax(board,computer,human,depth-1,true,alpha,beta);
                     board[i] = ' ';
+
                     bestScore = Math.min(score, bestScore);
+                    beta = Math.min(beta, score);
+                    if(beta <= alpha){
+                        break;
+                    }
                 }
             }
             return bestScore;
