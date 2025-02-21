@@ -128,6 +128,10 @@ public class Main {
         );
     }
 
+    static int counter = 0;
+    //for counting total number of searches performed with each move the computer makes
+    //and also to help in showcasing the optimisation of alpha-beta pruning
+
     static int AI(int turnsPlayed, char computer, char human, char[] board) {
 
         double bestScore = Double.NEGATIVE_INFINITY;
@@ -146,11 +150,13 @@ public class Main {
                 }
             }
         }
-
+        System.out.println("***MinMax performed "+counter+" searches!***");
+        counter = 0;
         return move+1;
     }
 
     static double minMax(char[] board, char computer, char human, int depth, boolean isMaximising) {
+        counter++;
         char result = winCondition(board);
         if(result != 'a'){
             if(result == computer){
