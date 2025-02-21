@@ -8,11 +8,13 @@ public class Main {
         char[] boardLayout =
                 {'1', '2', '3',
                  '4', '5', '6',
-                 '7', '8', '9'};
+                 '7', '8', '9'}; //as a visual guide at the start of the game
+
         char[] board =
                 {' ', ' ', ' ',
                  ' ', ' ', ' ',
-                 ' ', ' ', ' '};
+                 ' ', ' ', ' '}; //actual board
+
         int turnsPlayed = 0;
         char playerTile = 'x';
 
@@ -33,9 +35,9 @@ public class Main {
         while(turnsPlayed < 9) {
 
             System.out.println("Select a tile number Player '"+playerTile+"':");
-            int choice = 0;
+            int choice;
 
-            //handling illegal moves
+            //handling illegal player moves
             if(human == playerTile) {
                 choice = scanner.nextInt();
 
@@ -48,7 +50,7 @@ public class Main {
                     choice = scanner.nextInt();
                 }
             }else{
-                choice = AI(turnsPlayed,computer,human,board);
+                choice = AI(computer,human,board);
                 System.out.println("Computer chose: "+choice);
             }
 
@@ -106,9 +108,10 @@ public class Main {
         }
 
         boolean hasOpenSlot = false;
-        for (int i = 0; i < board.length; i++) {
-            if (board[i] == ' ') {
+        for (char c : board) {
+            if (c == ' ') {
                 hasOpenSlot = true;
+                break;
             }
         }
         if(!hasOpenSlot){
@@ -132,30 +135,29 @@ public class Main {
     //for counting total number of searches performed with each move the computer makes
     //and also to help in showcasing the optimisation of alpha-beta pruning
 
-    static int AI(int turnsPlayed, char computer, char human, char[] board) {
+    static int AI(char computer, char human, char[] board) {
 
-        double bestScore = Double.NEGATIVE_INFINITY;
+        int bestScore = Integer.MIN_VALUE;
         int move = 4;
 
-        if(turnsPlayed != 0) {
-            for (int i = 0; i < board.length; i++) {
-                if (board[i] == ' ') {
-                    board[i] = computer;
-                    double score = minMax(board, computer, human, 0, false);
-                    board[i] = ' '; //resetting the actual value so as to not create an issue
-                    if (score > bestScore) {
-                        bestScore = score;
-                        move = i;
-                    }
+        for (int i = 0; i < board.length; i++) {
+            if (board[i] == ' ') {
+                board[i] = computer;
+                int score = minMax(board, computer, human, 0, false);
+                board[i] = ' '; //resetting the actual value to not override our board
+                if (score > bestScore) {
+                    bestScore = score;
+                    move = i;
                 }
             }
         }
+
         System.out.println("***MinMax performed "+counter+" searches!***");
         counter = 0;
         return move+1;
     }
 
-    static double minMax(char[] board, char computer, char human, int depth, boolean isMaximising) {
+    static int minMax(char[] board, char computer, char human, int depth, boolean isMaximising) {
         counter++;
         char result = winCondition(board);
         if(result != 'a'){
@@ -169,11 +171,11 @@ public class Main {
         }
 
         if(isMaximising){ //maximiser (i.e. Computer)
-            double bestScore = Double.NEGATIVE_INFINITY;
+            int bestScore = Integer.MIN_VALUE;
             for (int i = 0; i < board.length; i++) {
                 if(board[i] == ' ') {
                     board[i] = computer;
-                    double score = minMax(board,computer,human,depth+1,false);
+                    int score = minMax(board,computer,human,depth+1,false);
                     board[i] = ' ';
                     bestScore = Math.max(score, bestScore);
                 }
@@ -181,11 +183,11 @@ public class Main {
             return bestScore;
         }
         else{ //minimiser (i.e. Human)
-            double bestScore = Double.POSITIVE_INFINITY;
+            int bestScore = Integer.MAX_VALUE;
             for (int i = 0; i < board.length; i++) {
                 if(board[i] == ' ') {
                     board[i] = human;
-                    double score = minMax(board,computer,human,depth+1,true);
+                    int score = minMax(board,computer,human,depth+1,true);
                     board[i] = ' ';
                     bestScore = Math.min(score, bestScore);
                 }
