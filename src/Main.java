@@ -32,11 +32,11 @@ public class Main {
                 computer = 'x';
             }
         }
-        int howDeepSearch = -1;
-        while(howDeepSearch < 0 || howDeepSearch > 9) {
-            System.out.println("Difficulty? 0 - 9");
+        int howDeepSearch = 0;
+        while(howDeepSearch < 1 || howDeepSearch > 9) {
+            System.out.println("Difficulty? 1 - 9");
             howDeepSearch = scanner.nextInt();
-            depth = howDeepSearch;
+            depth = howDeepSearch-1;
         }
 
         printBoard(boardLayout);
