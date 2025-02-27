@@ -175,7 +175,7 @@ public class Main {
             if (result == computer) {
                 return 10 - depth;
             } else if (result == human) {
-                return -10 - depth;
+                return -10 + depth;
             }
         }
         int computerPoints = 0;
