@@ -2,6 +2,8 @@ import java.util.Scanner;
 
 public class Main {
 
+    static public int depth = 0;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -29,6 +31,12 @@ public class Main {
                 human = 'o';
                 computer = 'x';
             }
+        }
+        int howDeepSearch = 0;
+        while(howDeepSearch < 1 || howDeepSearch > 9) {
+            System.out.println("Difficulty? 1 - 9");
+            howDeepSearch = scanner.nextInt();
+            depth = howDeepSearch;
         }
 
         printBoard(boardLayout);
@@ -143,7 +151,7 @@ public class Main {
         for (int i = 0; i < board.length; i++) {
             if (board[i] == ' ') {
                 board[i] = computer;
-                int score = minMax(board, computer, human, 0,board.length,
+                int score = minMax(board, computer, human, 0,depth,
                         false, Integer.MIN_VALUE, Integer.MAX_VALUE);
                 board[i] = ' '; //resetting the actual value to not override our board
                 if (score > bestScore) {
